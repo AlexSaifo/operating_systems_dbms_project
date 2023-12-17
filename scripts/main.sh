@@ -19,9 +19,10 @@ read -p "Enter a choice (1-8): " choice
 case $choice in
     1)
         echo -e "\n"
-        dbname=$(./createDB.sh)
+        read -p "Enter the name database: " database
+        ./createDB.sh "$database"
         status="$?"
-        ./log.sh "$dbname" "$status" "create database"
+        ./log.sh "$database" "$status" "create database"
         
     ;;
     2)

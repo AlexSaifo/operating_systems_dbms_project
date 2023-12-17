@@ -59,7 +59,7 @@ sudo chmod 770 "$database_path"
 
 
 # add users in "admins.txt" into the group
-admins_file="../admins"
+admins_file="../admins/admins.txt"
 
 while IFS= read -r username
 do
