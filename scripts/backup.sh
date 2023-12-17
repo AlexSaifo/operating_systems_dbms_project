@@ -15,10 +15,13 @@ function gzip {
     tar -czvf $( realpath "$backupsPath/$databaseName-$fileName.gz" )  "../databases/$databaseName/"
 }
 
-function zip {
-    # zip
-    zip -r $( realpath "$backupsPath/$databaseName-$fileName.zip" )  "../databases/$databaseName/"
+function zipZip {
+   # zip
+#    echo "~/../..$backupsPath/$databaseName-$fileName.zip"
+    zip $( realpath "$backupsPath/$databaseName-$fileName.zip") "../databases/$databaseName"
+    exit 0
 }
+
 
 # show help for usage
 if [ $1 == "-h" ]; then
@@ -28,17 +31,19 @@ if [ $1 == "-h" ]; then
     exit 0
 fi
 
-echo "enter database name to backup"
-    read databaseName
 
 # user want to do manual backup
 if [ $1 == "-m" ]; then
-    
-    if [ $2 == "--tar"]; then
+    echo "enter database name to backup"
+    read databaseName
+    # also add default option if user does not specify second argument    
+    if [ $2 == "--tar" ]; then
         tarZip
-    if [ $2 == "--zip" ]
-        zip
-    if [ $3 == "--gzip"]
+    elif [ $2 == "--zip" ]; then
+        zipZip
+    elif [ $2 == "--gzip" ];then
         gzip
+    fi
+    exit 0;
 fi
 
