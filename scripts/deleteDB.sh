@@ -30,7 +30,8 @@ do
 done
 if [ $x -eq 0 ]
 then
-    echo "No Databases to be deleted"
+    echo "No Databases to be deleted">&2
+    echo "$database_name"
     exit 1
 fi
 read -p "Enter database's name to be deleted: databases/" database_name
@@ -38,14 +39,16 @@ read -p "Enter database's name to be deleted: databases/" database_name
 
 if [ ! -d "databases/${database_name}" ] || [ ! -w "databases/${database_name}" ] || [ -z $database_name ]
 then
-    echo "Invalid Database name"
+    echo "Invalid Database name">&2
+    echo "$database_name"
     exit 1
 fi
 
 # Check if the directory is empty
 if [ ! -z "$(ls -A "databases/${database_name}")" ];
 then
-    echo "database is not empty"
+    echo "database is not empty">&2
+    echo "$database_name"
     exit 1
 fi
 
@@ -55,5 +58,7 @@ set -e
 sudo groupdel $database_name || exit 1
 
 # Delete the folder
-rm -d "databases/${database_name}" || exit 1
-echo "The database deleted successfully"
+yes | rm -d "databases/${database_name}" || exit 1
+echo "The database deleted successfully">&2
+echo "$database_name"
+exit 0

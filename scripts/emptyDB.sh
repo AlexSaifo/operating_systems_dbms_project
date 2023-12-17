@@ -21,18 +21,22 @@ read -p "Enter database's name to be deleted: databases/" database_name
 # Check if the directory exists and if the user has write permissions to it
 if [ ! -d "databases/${database_name}" ] || [ ! -w "databases/${database_name}" ]|| [ -z $database_name ]
 then
- echo "Invalid Database name"
+ echo "Invalid Database name">&2
+ echo "$database_name"
  exit 1
 fi
 
 # Check if the directory is empty
 if [ -z "$(ls -A "databases/${database_name}")" ];
 then
- echo "database is empty"
+ echo "database is empty">&2
+ echo "$database_name"
  exit 1
 fi
 
 # Delete the contents of the directory
 rm -r "databases/${database_name}"/*
 
-echo "database ${database_name} now is empty."
+echo "database ${database_name} now is empty.">&2
+echo "$database_name"
+exit 0

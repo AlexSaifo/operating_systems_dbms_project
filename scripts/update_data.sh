@@ -1,30 +1,32 @@
 
 databasesDirectory="../databases"
 
-echo "Available databases:"
-ls $databasesDirectory
+echo "Available databases:">&2
+ls $databasesDirectory>&2
 
 read -p "Enter the name of the Database to delete data from: " dbname
 
 if [[ ! -d "$databasesDirectory/$dbname" ]]; then
-  echo "Database '$dbname' does not exist."
+  echo "Database '$dbname' does not exist.">&2
+  echo "$dbname"
   exit 1
 fi
 
-echo "Tables in Database '$dbname':"
-ls "$databasesDirectory/$dbname"
+echo "Tables in Database '$dbname':">&2
+ls "$databasesDirectory/$dbname">&2
 
 ./check_permissions.sh  "$dbname" -r
 
 if [ $? != 0 ]; then
-  echo "permission denied"
-  exit 0
+  echo "permission denied">&2
+  exit 1
 fi 
 
 read -p "Enter the name of the table to delete data from: " tablename
 
 if [[ ! -f "$databasesDirectory/$dbname/$tablename.txt" ]]; then
-  echo "Table '$tablename' does not exist in Database '$dbname'."
+  echo "Table '$tablename' does not exist in Database '$dbname'.">&2
+  echo "$dbname"
   exit 1
 fi
   
@@ -65,11 +67,12 @@ fi
   fi
   echo "$line" >> "$databasesDirectory/$dbname/${tablename}_temp" 
   done < "$databasesDirectory/$dbname/$tablename.txt"
-  mv "$databasesDirectory/$dbname/${tablename}_temp" "$databasesDirectory/$dbname/$tablename.txt"
+  yes | mv "$databasesDirectory/$dbname/${tablename}_temp" "$databasesDirectory/$dbname/$tablename.txt"
   if [ "$edited" == true ];then
-    echo -e "data edited successfully \xF0\x9F\x98\x81"
+    echo -e "data edited successfully \xF0\x9F\x98\x81">&2
   else 
-    echo -e "id not found nothing has changed \xF0\x9F\x99\x81"
+    echo -e "id not found nothing has changed \xF0\x9F\x99\x81">&2
     
   fi
-  echo -e "made with love \xE2\x9D\xA4 kosai"
+  echo "$dbname"
+  exit 0

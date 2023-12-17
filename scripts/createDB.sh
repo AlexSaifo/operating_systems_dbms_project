@@ -29,7 +29,8 @@ set -e
 # check the database name
 
 if [ -z "$database_name" ]; then
-    echo "Invalid database name"
+    echo "Invalid database name">&2
+    echo "$database_name"
     exit 1
 fi
 
@@ -40,7 +41,8 @@ database_path="${databases_path}${database_name}"
 find_output=$( sudo find  $databases_path -type d -name $database_name)
 
 if [ -n "$find_output" ]; then
-    echo "the database \"$database_name\" already exists!"
+    echo "the database \"$database_name\" already exists!">&2
+    echo "$database_name"
     exit 1
     
 fi
@@ -69,5 +71,6 @@ done < $admins_file
 if [ "$type" = "public" ]; then
     chmod 777 "$database_name"
 fi
-
+echo "$database_name"
+exit 0
 
