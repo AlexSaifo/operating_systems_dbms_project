@@ -1,6 +1,6 @@
 #!/bin/bash
 
-databasesDirectory="./databases"
+databasesDirectory="../databases"
 echo "Enter the name of the database you want to add a table to:"
 read database
 

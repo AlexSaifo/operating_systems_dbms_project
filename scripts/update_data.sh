@@ -1,25 +1,34 @@
 
+databasesDirectory="../databases"
+
 echo "Available databases:"
-ls ../Databases
+ls $databasesDirectory
 
 read -p "Enter the name of the Database to delete data from: " dbname
 
-if [[ ! -d "/project/Databases/$dbname" ]]; then
+if [[ ! -d "$databasesDirectory/$dbname" ]]; then
   echo "Database '$dbname' does not exist."
   exit 1
 fi
 
 echo "Tables in Database '$dbname':"
-ls "../Databases/$dbname"
+ls "$databasesDirectory/$dbname"
+
+./check_permissions.sh  "$dbname" -r
+
+if [ $? != 0 ]; then
+  echo "permission denied"
+  exit 0
+fi 
 
 read -p "Enter the name of the table to delete data from: " tablename
 
-if [[ ! -f "../Databases/$dbname/$tablename" ]]; then
+if [[ ! -f "$databasesDirectory/$dbname/$tablename.txt" ]]; then
   echo "Table '$tablename' does not exist in Database '$dbname'."
   exit 1
 fi
   
-  attributes=$(head -n 1 "../Databases/$dbname/$tablename")
+  attributes=$(head -n 1 "$databasesDirectory/$dbname/$tablename.txt")
   IFS=',' read -ra attributes_list <<< "$attributes"
   
   read -p "Enter the id of the row you want to edit:" selected_id
@@ -50,13 +59,13 @@ fi
   while IFS= read -r line
   do
   if echo "$line" | grep -qE "$pattern"; then
-    echo "$new_data" >> "../Databases/$dbname/${tablename}_temp"
+    echo "$new_data" >> "$databasesDirectory/$dbname/${tablename}_temp"
     edited=true
     continue
   fi
-  echo "$line" >> "../Databases/$dbname/${tablename}_temp" 
-  done < "../Databases/$dbname/$tablename"
-  mv "../Databases/$dbname/${tablename}_temp" "../Databases/$dbname/$tablename"
+  echo "$line" >> "$databasesDirectory/$dbname/${tablename}_temp" 
+  done < "$databasesDirectory/$dbname/$tablename.txt"
+  mv "$databasesDirectory/$dbname/${tablename}_temp" "$databasesDirectory/$dbname/$tablename.txt"
   if [ "$edited" == true ];then
     echo -e "data edited successfully \xF0\x9F\x98\x81"
   else 

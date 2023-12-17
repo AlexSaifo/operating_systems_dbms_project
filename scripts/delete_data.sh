@@ -1,20 +1,30 @@
 
+databasesDirectory="../databases"
+
 echo "Available databases:"
-ls ../Databases
+ls $databasesDirectory
 
 read -p "Enter the name of the Database to delete data from: " dbname
 
-if [[ ! -d "/project/Databases/$dbname" ]]; then
+if [[ ! -d "$databasesDirectory/$dbname" ]]; then
   echo "Database '$dbname' does not exist."
   exit 1
 fi
 
 echo "Tables in Database '$dbname':"
-ls "../Databases/$dbname"
+
+./check_permissions.sh  "$dbname" -r
+
+if [ $? != 0 ]; then
+  echo "permission denied"
+  exit 0
+fi 
+  
+ls "$databasesDirectory/$dbname"
 
 read -p "Enter the name of the table to delete data from: " tablename
 
-if [[ ! -f "../Databases/$dbname/$tablename" ]]; then
+if [[ ! -f "$databasesDirectory/$dbname/$tablename" ]]; then
   echo "Table '$tablename' does not exist in Database '$dbname'."
   exit 1
 fi
@@ -27,8 +37,8 @@ read -p "Enter the option (1 or 2): " option
 if [ "$option" == "1" ]; then
   read -p "Are you sure: " confirm
   if [ "$confirm" == "yes" ]; then
-  attributes=$(head -n 1 "../Databases/$dbname/$tablename")
-  echo "$attributes" > "../Databases/$dbname/$tablename"
+  attributes=$(head -n 1 "$databasesDirectory/$dbname/$tablename")
+  echo "$attributes" > "$databasesDirectory/$dbname/$tablename"
   echo "All data in Table '$tablename' deleted successfully."
   else 
     exit 1
@@ -36,7 +46,7 @@ if [ "$option" == "1" ]; then
 elif [ "$option" == "2" ]; then
  
   
-  attributes=$(head -n 1 "../Databases/$dbname/$tablename")
+  attributes=$(head -n 1 "$databasesDirectory/$dbname/$tablename")
   
   
   comma_count=0
@@ -82,10 +92,10 @@ elif [ "$option" == "2" ]; then
   while IFS= read -r line
   do
   if ! echo "$line" | grep -qE "$pattern"; then 
-  echo "$line" >> "../Databases/$dbname/${tablename}_temp"
+  echo "$line" >> "$databasesDirectory/$dbname/${tablename}_temp"
   fi
-  done < "../Databases/$dbname/$tablename"
-  mv "../Databases/$dbname/${tablename}_temp" "../Databases/$dbname/$tablename"
+  done < "$databasesDirectory/$dbname/$tablename"
+  mv "$databasesDirectory/$dbname/${tablename}_temp" "$databasesDirectory/$dbname/$tablename"
   echo "Data in Table '$tablename' deleted successfully based on the specified criteria."
 else
   echo "Invalid option. Please enter either '1' or '2'."

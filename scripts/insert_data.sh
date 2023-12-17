@@ -1,6 +1,6 @@
 #!/bin/bash
 
-databasesDirectory="./databases"
+databasesDirectory="../databases"
 
 echo "Databases:"
 ls $databasesDirectory

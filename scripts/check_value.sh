@@ -1,5 +1,5 @@
 #!/bin/bash
-databasesDirectory="./databases"
+databasesDirectory="../databases"
 # echo "Enter the name of the database:"
 database=$1
 # echo "Enter the name of the table:"

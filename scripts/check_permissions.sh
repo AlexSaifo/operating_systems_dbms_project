@@ -7,7 +7,7 @@ if [ $1 = "-h" ]; then
     exit 0
 fi
 
-if [ ! -d "databases/${database_name}" ] || [ ! $2 "databases/${database_name}" ] || [ -z $database_name ]
+if [ ! -d "../databases/${database_name}" ] || [ ! $2 "../databases/${database_name}" ] || [ -z $database_name ]
 then
     echo "Permession Denied"
     exit 1

@@ -33,8 +33,7 @@ if [ -z "$database_name" ]; then
     exit 1
 fi
 
-databases_path="$(pwd)/databases/"
-
+databases_path="../databases/"
 database_path="${databases_path}${database_name}"
 
 #check if the folder already exists
@@ -58,7 +57,7 @@ sudo chmod 770 "$database_path"
 
 
 # add users in "admins.txt" into the group
-admins_file="$(pwd)/admins"
+admins_file="../admins"
 
 while IFS= read -r username
 do
