@@ -46,9 +46,9 @@ if [ $1 == "-m" ]; then
     exit 0;
 fi
 
-HOUR=$(date +"%H")
-DAY=$(date +"%d")
-MONTH=$(date +"%m")
+HOUR=$( date +"%H" )
+DAY=$( date +"%d" )
+MONTH=$( date +"%m" )
 directory=$( pwd )
 
 if [ $1 == "-s" ]; then
