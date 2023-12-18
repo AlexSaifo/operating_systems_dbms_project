@@ -34,7 +34,7 @@ case $choice in
         echo -e "\n"
         read -p "Enter the name database: " database
         read -p "Is it public (y/n) ?: " ispublic
-        if [ "$ispublic" == 'y'];then
+        if [ "$ispublic" == 'y' ];then
         ./createDB.sh --pu "$database"
 
         else
