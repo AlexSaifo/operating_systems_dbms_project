@@ -45,23 +45,27 @@ sz_limit=20  # replace with the desired size limit in megabytes
 
 file_path=$1
 current_sz=$(du -k "$file_path" | cut -f1) # replace with the size of the "current" file in megabytes
-
+if [ "$current_sz" -gt "$sz_limit" ];then
+rm "$file_path"
+exit 0
+fi
 while true; do
     # Get the current size of the folder
     folder_sz=$(du -k "$backupsPath/$databaseName" | cut -f1)
-
+    echo "folder size: $folder_sz"
     # Calculate the total limit
     total_limit=$((sz_limit + current_sz))
-
+    echo "total_limit: $total_limit"
     # Check if the folder size is greater than the limit
-    if [ "$folder_sz" -gt "$total_limit" ]; then
+    if [ "$folder_sz" -gt "$sz_limit" ]; then
         # Delete the oldest file in the folder
-        oldest_file=$(ls -lt "$backupsPath/$databaseName" | awk 'NR==2 {print $NF}')
+        readarray -t backupFiles <<< "$( ls -t $( realpath "$backupsPath/$databaseName" ))"
+        oldest_file="${backupFiles[-1]}"
         rm "$backupsPath/$databaseName/$oldest_file"
         echo "Deleted: $folder/$oldest_file"
     else
         # Move the "current" file into the folder
-        mv "current" "$backupsPath/$databaseName/"
+        #mv "current" "$backupsPath/$databaseName/"
         echo "Moved: current to $folder/"
         exit 0
     fi

@@ -25,6 +25,7 @@ do
             # Print the name of the directory
             x=$((x + 1))
             echo ${folder}
+        elif [ - ]
         fi
     fi
 done
