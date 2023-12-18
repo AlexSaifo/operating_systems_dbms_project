@@ -9,4 +9,4 @@ note="$3"
 
 role=$(./check_user.sh "$dbname")
 data="$note:database name: $dbname $USER:"$role" $(date) status: $(if [ "$status" -eq 0 ]; then echo "true"; else echo "false"; fi)"
-echo "$data" | sudo tee -a "$file_path" > /dev/null
+echo "$data" | tee -a "$file_path" > /dev/null
