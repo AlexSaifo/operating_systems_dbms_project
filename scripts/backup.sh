@@ -56,14 +56,20 @@ if [ $1 == "-m" ]; then
     elif [ $2 == "--gzip" ];then
         gzip
     fi
-    exit 0;
+    
+    max_backups=5
 
     # keep only newest 5 backups of database
-    readarray -t databases <<< "$(ls -t "$databasesDirectory/$databaseName")"
-
-
+    readarray -t databases <<< "$( ls -t $( realpath "$backupsPath/$databaseName" ))"
+    for ((i = max_backups; i < ${#databases[@]}; i++)); do
+     if [ "$i" -ge $max_backups ]; then
+        rm "$backupsPath/$databaseName/${databases[i]}"
+        echo "Removed: $backupsPath/$databaseName/${databases[i]}"
+    fi
+    done
     # if exceeding size DELETE old backups
 
+    exit 0;
 fi
 
 
