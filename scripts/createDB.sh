@@ -69,7 +69,7 @@ done < $admins_file
 # if it's public then all users have access and can
 # perform (retrieve, insert, update) on the database
 if [ "$type" = "public" ]; then
-    chmod 777 "$database_name"
+    chmod 777 "$database_path"
 fi
 echo "$database_name"
 exit 0

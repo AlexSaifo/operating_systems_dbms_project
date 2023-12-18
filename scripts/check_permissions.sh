@@ -9,7 +9,7 @@ fi
 
 if [ ! -d "../databases/${database_name}" ] || [ ! $2 "../databases/${database_name}" ] || [ -z $database_name ]
 then
-    echo "Permession Denied"
+    # echo "Permession Denied"
     exit 1
 fi
 exit 0

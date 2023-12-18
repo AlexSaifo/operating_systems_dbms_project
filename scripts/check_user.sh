@@ -22,7 +22,7 @@ if [ "$current_user" = "$directory_owner" ]; then
 else
   while IFS= read -r line
   do
-    if [ "$line" == $current_user];then
+    if [ "$line" == $current_user ];then
     echo "admin"
     exit 0
     fi
