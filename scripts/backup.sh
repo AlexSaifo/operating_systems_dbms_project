@@ -1,24 +1,37 @@
 #!/bin/bash
 
 backupsPath="/opt/backups" 
-fileName="backup-$(date +"H-%H-M-%M-%S-%Y-%m-%d")"
+fileName="backup-$(date +"H-%H-M-%M-S-%S-%Y-%m-%d")"
 
 databaseName=$3
 
+function makeDir {
+    if [ ! -d "$backupsPath/$databaseName" ]; then
+    # If the directory doesn't exist, create it
+    mkdir -p "$backupsPath/$databaseName"
+    
+    
+ 
+    fi
+}
+
 function tarZip {
     #tar
-    tar -cvf $( realpath "$backupsPath/$databaseName-$fileName.tar" )  "../databases/$databaseName/" 
+    makeDir
+    tar -cvf $( realpath "$backupsPath/$databaseName/$databaseName-$fileName.tar" )  "../databases/$databaseName/" 
 }
 
 function gzip {
     # gzip
-    tar -czvf $( realpath "$backupsPath/$databaseName-$fileName.gz" )  "../databases/$databaseName/"
+    makeDir
+    tar -czvf $( realpath "$backupsPath/$databaseName/$databaseName-$fileName.gz" )  "../databases/$databaseName/"
 }
 
 function zipZip {
    # zip
 #    echo "~/../..$backupsPath/$databaseName-$fileName.zip"
-    zip $( realpath "$backupsPath/$databaseName-$fileName.zip") "../databases/$databaseName"
+    makeDir
+    zip $( realpath "$backupsPath/$databaseName/$databaseName-$fileName.zip") "../databases/$databaseName"
     exit 0
 }
 
@@ -44,7 +57,15 @@ if [ $1 == "-m" ]; then
         gzip
     fi
     exit 0;
+
+    # keep only newest 5 backups of database
+    readarray -t databases <<< "$(ls -t "$databasesDirectory/$databaseName")"
+
+
+    # if exceeding size DELETE old backups
+
 fi
+
 
 directory=$( pwd )
 
