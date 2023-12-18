@@ -19,12 +19,16 @@ function tarZip {
     #tar
     makeDir
     tar -cvf $( realpath "$backupsPath/$databaseName/$databaseName-$fileName.tar" )  "../databases/$databaseName/" 
+    check_storage "$backupsPath/$databaseName/$databaseName-$fileName.tar"
+
 }
 
 function gzip {
     # gzip
     makeDir
     tar -czvf $( realpath "$backupsPath/$databaseName/$databaseName-$fileName.gz" )  "../databases/$databaseName/"
+    check_storage "$backupsPath/$databaseName/$databaseName-$fileName.gz"
+
 }
 
 function zipZip {
@@ -32,9 +36,37 @@ function zipZip {
 #    echo "~/../..$backupsPath/$databaseName-$fileName.zip"
     makeDir
     zip $( realpath "$backupsPath/$databaseName/$databaseName-$fileName.zip") "../databases/$databaseName"
+    check_storage "$backupsPath/$databaseName/$databaseName-$fileName.zip"
     exit 0
 }
 
+function check_storage {
+sz_limit=20  # replace with the desired size limit in megabytes
+
+file_path=$1
+current_sz=$(du -k "$file_path" | cut -f1) # replace with the size of the "current" file in megabytes
+
+while true; do
+    # Get the current size of the folder
+    folder_sz=$(du -k "$backupsPath/$databaseName" | cut -f1)
+
+    # Calculate the total limit
+    total_limit=$((sz_limit + current_sz))
+
+    # Check if the folder size is greater than the limit
+    if [ "$folder_sz" -gt "$total_limit" ]; then
+        # Delete the oldest file in the folder
+        oldest_file=$(ls -lt "$backupsPath/$databaseName" | awk 'NR==2 {print $NF}')
+        rm "$backupsPath/$databaseName/$oldest_file"
+        echo "Deleted: $folder/$oldest_file"
+    else
+        # Move the "current" file into the folder
+        mv "current" "$backupsPath/$databaseName/"
+        echo "Moved: current to $folder/"
+        exit 0
+    fi
+done    
+}
 
 # show help for usage
 if [ $1 == "-h" ]; then
@@ -56,7 +88,7 @@ if [ $1 == "-m" ]; then
     elif [ $2 == "--gzip" ];then
         gzip
     fi
-    
+
     max_backups=5
 
     # keep only newest 5 backups of database
