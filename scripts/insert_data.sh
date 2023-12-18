@@ -2,8 +2,8 @@
 
 databasesDirectory="../databases"
 
-echo "Databases:">&2
-ls $databasesDirectory>&2
+# echo "Databases:">&2
+# ls $databasesDirectory>&2
 echo "Enter the name of the database you want to insert data into:">&2
 read database
 

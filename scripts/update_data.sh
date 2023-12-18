@@ -1,8 +1,8 @@
 
 databasesDirectory="../databases"
 
-echo "Available databases:">&2
-ls $databasesDirectory>&2
+# echo "Available databases:">&2
+# ls $databasesDirectory>&2
 
 read -p "Enter the name of the Database to delete data from: " dbname
 
@@ -15,12 +15,12 @@ fi
 echo "Tables in Database '$dbname':">&2
 ls "$databasesDirectory/$dbname">&2
 
-./check_permissions.sh  "$dbname" -r
+# ./check_permissions.sh  "$dbname" -r
 
-if [ $? != 0 ]; then
-  echo "permission denied">&2
-  exit 1
-fi 
+# if [ $? != 0 ]; then
+#   echo "permission denied">&2
+#   exit 1
+# fi 
 
 read -p "Enter the name of the table to delete data from: " tablename
 
