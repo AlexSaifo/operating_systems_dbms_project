@@ -1,10 +1,9 @@
+#!/bin/bash
 
 databasesDirectory="../databases"
 
-# echo "Available databases:">&2
-# ls $databasesDirectory>&2
 
-read -p "Enter the name of the Database to delete data from: " dbname
+read -p "Enter the name of the Database to update data from: " dbname
 
 if [[ ! -d "$databasesDirectory/$dbname" ]]; then
   echo "Database '$dbname' does not exist.">&2
@@ -15,14 +14,8 @@ fi
 echo "Tables in Database '$dbname':">&2
 ls "$databasesDirectory/$dbname">&2
 
-# ./check_permissions.sh  "$dbname" -r
 
-# if [ $? != 0 ]; then
-#   echo "permission denied">&2
-#   exit 1
-# fi 
-
-read -p "Enter the name of the table to delete data from: " tablename
+read -p "Enter the name of the table to update data from: " tablename
 
 if [[ ! -f "$databasesDirectory/$dbname/$tablename.txt" ]]; then
   echo "Table '$tablename' does not exist in Database '$dbname'.">&2
@@ -51,7 +44,7 @@ fi
     if [ -z "$new_data" ]; then
         new_data="$item"
     else
-        new_data+="$result,$item"
+        new_data+=",$item"
     fi
   done
 

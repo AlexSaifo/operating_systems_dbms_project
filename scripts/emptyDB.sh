@@ -1,13 +1,10 @@
 #!/bin/bash
 dir="../databases"
 x=0
-# Loop over all directories in the databases folder
 for folder in $(ls -d -- ${dir}/*/)
 do
-    # Check if the current user can delete the directory
     if test -w ${folder}
     then
-        # Check if the directory is empty
         if [ ! -z "$(ls -A ${folder})" ];
         then
             all_files_one_line=true
@@ -26,7 +23,7 @@ do
             done
             if ! $all_files_one_line
             then
-                echo ${folder}
+                echo ${folder}>&2
                 x=$((x + 1))
             fi
         fi
@@ -42,7 +39,6 @@ fi
 
 read -p "Enter database's name to be deleted: databases/" database_name
 
-# Check if the directory exists and if the user has write permissions to it
 if [ ! -d "../databases/${database_name}" ] || [ ! -w "../databases/${database_name}" ]|| [ -z $database_name ]
 then
  echo "Invalid Database name">&2
@@ -50,7 +46,6 @@ then
  exit 1
 fi
 
-# Check if the directory is empty
 if [ -z "$(ls -A "../databases/${database_name}")" ];
 then
  echo "database is empty">&2
@@ -84,7 +79,6 @@ fi
 
 
 
-# Delete the contents of the directory
 
 for file in "../databases/${database_name}"/*
 do

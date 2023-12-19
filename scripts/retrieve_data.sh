@@ -1,8 +1,6 @@
+#!/bin/bash
 
 databasesDirectory="../databases"
-
-# echo "Available databases:">&2
-# ls $databasesDirectory>&2
 
 read -p "Enter the name of the Database to retrieve data from: " dbname
 

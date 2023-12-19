@@ -2,8 +2,6 @@
 
 databasesDirectory="../databases"
 
-# echo "Databases:">&2
-# ls $databasesDirectory>&2
 echo "Enter the name of the database you want to insert data into:">&2
 read database
 
@@ -31,9 +29,7 @@ for column in "${columns[@]}"; do
 
     read value
 
-   # if this is the first column in columns:
    if [ "$column" == "${columns[0]}" ]; then
-       # check that the value entered by the user for the first or (id) column is unique
        ./check_value.sh $database $table id $value
        if [ $? -eq 0 ]; then
            echo "Error: id already exists.">&2
@@ -41,12 +37,12 @@ for column in "${columns[@]}"; do
            exit 1
        fi
    fi
-   # end of id condition
+   
 
    
    data="$data,$value"
 done
-data=${data:1} # remove the leading comma
+data=${data:1} 
 
 echo "$data" >> "$databasesDirectory/$database/$table.txt"
 echo "Data has been successfully inserted into the $table table in the $database database.">&2

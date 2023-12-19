@@ -16,7 +16,7 @@ read table
 echo "Enter the number of columns you want in the table:">&2
 read num_columns
 
-columns="id"  # default column
+columns="id"  
 for ((i=1; i<=num_columns; i++))
 do
     echo "Enter the name of column $i:">&2

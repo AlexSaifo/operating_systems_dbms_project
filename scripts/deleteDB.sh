@@ -1,30 +1,15 @@
-# When Deleting a Database, achieve the following:
-# ● Only owners or admins can delete any database (private or public).
-# ● Only empty databases can be deleted.
-# ● Deleting a Database requires deleting the metadata of the Database.
-# ● The script should show all the databases inside the Database directory to choose one to delete
 
 #!/bin/bash
 dir="../databases"
-# if ! test -r "${databases_path}"
-# then
-#    echo "Permission Denied."
-#    exit 1
-# fi
-
-# Loop over all directories in the databases folder
 x=0
 for folder in $(ls -d -- ${dir}/*/)
 do
-    # Check if the current user can delete the directory
     if test -w ${folder}
     then
-        # Check if the directory is empty
         if [ -z "$(ls -A ${folder})" ];
         then
-            # Print the name of the directory
             x=$((x + 1))
-            echo ${folder}
+            echo ${folder}>&2
         else
             all_files_one_line=true
 
@@ -43,7 +28,7 @@ do
 
             if $all_files_one_line
             then
-                echo ${folder}
+                echo ${folder}>&2
                 x=$((x + 1))
             fi
         fi
@@ -65,7 +50,6 @@ then
     exit 1
 fi
 
-# Check if the directory is valid
 all_files_one_line=true
 
 for file in "../databases/${database_name}"/*
@@ -90,10 +74,8 @@ fi
 
 set -e
 
-# Delete the group
-sudo groupdel $database_name || exit 1
+ groupdel $database_name || exit 1
 
-# Delete the folder
 yes | rm -d -r "../databases/${database_name}" || exit 1
 echo "The database deleted successfully">&2
 echo "$database_name"

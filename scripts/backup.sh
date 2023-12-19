@@ -7,7 +7,6 @@ databaseName=$3
 
 function makeDir {
     if [ ! -d "$backupsPath/$databaseName" ]; then
-    # If the directory doesn't exist, create it
     mkdir -p "$backupsPath/$databaseName"
     
     
@@ -32,8 +31,6 @@ function gzip {
 }
 
 function zipZip {
-   # zip
-#    echo "~/../..$backupsPath/$databaseName-$fileName.zip"
     makeDir
     zip $( realpath "$backupsPath/$databaseName/$databaseName-$fileName.zip") "../databases/$databaseName"
     check_storage "$backupsPath/$databaseName/$databaseName-$fileName.zip"
@@ -41,38 +38,31 @@ function zipZip {
 }
 
 function check_storage {
-sz_limit=20  # replace with the desired size limit in megabytes
+sz_limit=20  
 
 file_path=$1
-current_sz=$(du -k "$file_path" | cut -f1) # replace with the size of the "current" file in megabytes
+current_sz=$(du -k "$file_path" | cut -f1) 
 if [ "$current_sz" -gt "$sz_limit" ];then
 rm "$file_path"
-exit 0
+exit 1
 fi
 while true; do
-    # Get the current size of the folder
     folder_sz=$(du -k "$backupsPath/$databaseName" | cut -f1)
     echo "folder size: $folder_sz"
-    # Calculate the total limit
     total_limit=$((sz_limit + current_sz))
     echo "total_limit: $total_limit"
-    # Check if the folder size is greater than the limit
     if [ "$folder_sz" -gt "$sz_limit" ]; then
-        # Delete the oldest file in the folder
         readarray -t backupFiles <<< "$( ls -t $( realpath "$backupsPath/$databaseName" ))"
         oldest_file="${backupFiles[-1]}"
         rm "$backupsPath/$databaseName/$oldest_file"
         echo "Deleted: $folder/$oldest_file"
     else
-        # Move the "current" file into the folder
-        #mv "current" "$backupsPath/$databaseName/"
         echo "Moved: current to $folder/"
         exit 0
     fi
 done    
 }
 
-# show help for usage
 if [ $1 == "-h" ]; then
     echo "Usage $0 [OPTIONS] [DATABASE_NAME]"
     echo "-"
@@ -81,10 +71,8 @@ if [ $1 == "-h" ]; then
 fi
 
 
-# user want to do manual backup
 if [ $1 == "-m" ]; then
-    
-    # also add default option if user does not specify second argument    
+      
     if [ $2 == "--tar" ]; then
         tarZip
     elif [ $2 == "--zip" ]; then
@@ -95,7 +83,6 @@ if [ $1 == "-m" ]; then
 
     max_backups=5
 
-    # keep only newest 5 backups of database
     readarray -t databases <<< "$( ls -t $( realpath "$backupsPath/$databaseName" ))"
     for ((i = max_backups; i < ${#databases[@]}; i++)); do
      if [ "$i" -ge $max_backups ]; then
@@ -103,7 +90,6 @@ if [ $1 == "-m" ]; then
         echo "Removed: $backupsPath/$databaseName/${databases[i]}"
     fi
     done
-    # if exceeding size DELETE old backups
 
     exit 0;
 fi

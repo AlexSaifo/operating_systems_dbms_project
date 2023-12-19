@@ -9,13 +9,10 @@ echo "undefined"
 exit 1
 fi
 
-# Get the owner of the directory
 directory_owner=$(stat -c '%U' "$databasesDirectory/$database_name")
 
-# Get the current user
 current_user=$(whoami)
 
-# Check if the current user is the owner of the directory
 if [ "$current_user" = "$directory_owner" ]; then
     echo "owner"
     exit 0

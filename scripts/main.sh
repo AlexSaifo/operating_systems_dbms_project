@@ -15,6 +15,17 @@ function printDatabase {
     done
 }
 
+function printbackups {
+    echo "available databases:"
+    readarray -t databases <<< "$(ls "$databasesDirectory")"
+    for database in "${databases[@]}"; do
+    ./check_permissions.sh  "$database" -w
+    if [ $? -eq 0 ] && [ -d "/opt/backups/${database}" ]; then 
+    echo "$database"
+    fi
+    done
+}
+
 while true;
 do 
 echo "available actions"
@@ -27,8 +38,11 @@ echo "6- insert data into table"
 echo "7- edit data in table"
 echo "8- delete data from table"
 echo "9- retreive data"
+echo "10 - manual backup"
+echo "11 - schedule backup"
+echo "12 - restore from backup"
 
-read -p "Enter a choice (1-9): " choice
+read -p "Enter a choice (1-12): " choice
 case $choice in
     1)
         echo -e "\n"
@@ -60,14 +74,14 @@ case $choice in
     ;;
     4)
         echo -e "\n"
-        printDatabase
+        
         dbname=$(./deleteDB.sh)
         status="$?"
         ./log.sh "$dbname" "$status" "delete database"
     ;;
     5)
         echo -e "\n"
-        printDatabase
+        
         dbname=$(./emptyDB.sh)
         status="$?"
         ./log.sh "$dbname" "$status" "empty database"
@@ -99,6 +113,34 @@ case $choice in
         dbname=$(./retrieve_data.sh)
         status="$?"
         ./log.sh "$dbname" "$status" "retrieve data"
+    ;;
+    10)
+        echo -e "\n"
+        printDatabase
+        read -p "Enter the name database: " database
+        echo "backup types: --tar --gzip --zip: "
+        read -p "enter the name of the backup type: " backupType
+        ./backup.sh -m $backupType $database
+        status="$?"
+        ./log.sh "$database" "$status" "manual backup"
+    ;;
+    11)
+        echo -e "\n"
+        printDatabase
+        read -p "Enter the name database: " database
+        echo "backup types: --tar --gzip --zip: "
+        read -p "enter the name of the backup type: " backupType
+        read -p "enter backup frequency 1m 10m 1h 1d 1M: " frequency
+        ./backup.sh -s $backupType $database $frequency
+        status="$?"
+        ./log.sh "$database" "$status" "schedule $frequency backup"
+    ;;
+        12)
+        echo -e "\n"
+        printbackups
+        dbname=$(./restore.sh)
+        status="$?"
+        ./log.sh "$dbname" "$status" "restore database"
     ;;
     *)
         echo -e "\nInvalid input please enter a number betwen 1-9\n"
